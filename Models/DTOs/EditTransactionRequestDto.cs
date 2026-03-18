@@ -1,0 +1,13 @@
+using KitaTrackDemo.Api.Models.Entities;
+
+namespace KitaTrackDemo.Api.Models.DTOs;
+
+public class EditTransactionRequestDto
+{
+    public Guid Id { get; set; }
+    public DateTime Date { get; set; } = DateTime.UtcNow;
+    public Guid? TransactionTypeId { get; set; }
+    public string Reference { get; set; } = string.Empty;    
+    public double Amount { get; set; }
+    public double Fee { get; set; }
+}
