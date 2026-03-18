@@ -34,13 +34,24 @@ options.Events = new JwtBearerEvents
         OnChallenge = async context =>
         {
             context.HandleResponse();
-            context.Response.StatusCode = 401;
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             context.Response.ContentType = "application/json";
+
+            string errorMessage = "You are not authorized to access this resource.";
+
+            if (context.AuthenticateFailure is SecurityTokenExpiredException)
+            {
+                errorMessage = "Your session has expired. Please login again.";
+            }
+            else if (context.Error == "invalid_token")
+            {
+                errorMessage = "The security token is invalid.";
+            }
 
             var response = new ErrorResponseDto 
             { 
-                StatusCode = 401, 
-                Message = "You are not authorized to access this resource." 
+                StatusCode = StatusCodes.Status401Unauthorized, 
+                Message = errorMessage
             };
 
             await context.Response.WriteAsJsonAsync(response);
