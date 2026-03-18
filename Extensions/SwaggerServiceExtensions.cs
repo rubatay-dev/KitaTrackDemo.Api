@@ -43,7 +43,7 @@ public static class SwaggerServiceExtensions
         return services;
     }
 
-    public static string GetSwaggerDocDescription()
+    private static string GetSwaggerDocDescription()
     {
         var description = new StringBuilder();
         description.AppendLine("### Backend for managing GCash, Maya or other e-wallet transactions.");
