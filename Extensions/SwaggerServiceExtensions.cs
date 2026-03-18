@@ -15,7 +15,7 @@ public static class SwaggerServiceExtensions
             { 
                 Title = "KitaTrack Demo API", 
                 Version = "v1",
-                Description = "Backend for managing GCash, Maya or other e-wallet transactions.",
+                Description = GetSwaggerDocDescription(),
                 Contact = new OpenApiContact
                 {
                     Name = "Roberto Ubatay Jr",
@@ -41,5 +41,18 @@ public static class SwaggerServiceExtensions
         });
 
         return services;
+    }
+
+    public static string GetSwaggerDocDescription()
+    {
+        var description = new StringBuilder();
+        description.AppendLine("### Backend for managing GCash, Maya or other e-wallet transactions.");
+        description.AppendLine();
+        description.AppendLine("Use the following credentials to test the Transaction endpoints:");
+        description.AppendLine("- **Email**: rubatay.dev@gmail.com");
+        description.AppendLine("- **Password:** 12345678Qw!");
+        description.AppendLine();
+        description.AppendLine("*This demo account is pre-loaded with transactions.*"); 
+        return description.ToString();
     }
 }
