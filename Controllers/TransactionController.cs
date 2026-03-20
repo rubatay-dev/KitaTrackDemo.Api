@@ -16,12 +16,27 @@ namespace KitaTrackDemo.Api.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _writeService;
-        private readonly ITransactionQueryService _readService;
+        private readonly ITransactionQueryService _readService;   
+
+        private Guid? _userId;     
 
         public TransactionController(ITransactionService writeService, ITransactionQueryService readService)
         {
             _writeService = writeService;
             _readService = readService;   
+        }
+
+        private Guid UserId
+        {
+            get
+            {
+                if (!_userId.HasValue)
+                {
+                    var claim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                    _userId = Guid.TryParse(claim, out var id) ? id : Guid.Empty;
+                }
+                return _userId.Value;
+            }
         }
 
         // GET: api/transactions/id
@@ -30,11 +45,9 @@ namespace KitaTrackDemo.Api.Controllers
         [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<TransactionResponseDto>> GetById(Guid id)
         {
-            //throw new Exception("This is a test error");
+            if (!IsUserClaimValid(out var userClaimError)) return userClaimError!;
 
-            var userId = Guid.Parse(User.FindFirst((ClaimTypes.NameIdentifier))?.Value);
-
-            var result = await _readService.GetByIdAsync(id, userId);
+            var result = await _readService.GetByIdAsync(id, UserId);
 
             if (!result.IsSuccess)
                 return HandleError(StatusCodes.Status404NotFound, result.Error);
@@ -51,9 +64,9 @@ namespace KitaTrackDemo.Api.Controllers
         [ProducesResponseType(typeof(PagedResponse<GetHistoryResponseDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PagedResponse<GetHistoryResponseDto>>> GetHistory([FromQuery] TransactionFilterDto filter)
         {
-            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            if (!IsUserClaimValid(out var userClaimError)) return userClaimError!;
 
-            var result = await _readService.GetHistoryAsync(filter, userId);
+            var result = await _readService.GetHistoryAsync(filter, UserId);
 
             return Ok(result.Value); 
         }
@@ -64,9 +77,9 @@ namespace KitaTrackDemo.Api.Controllers
         [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TransactionResponseDto>> Create([FromBody] CreateTransactionRequestDto request)
         {
-            var userId = Guid.Parse(User.FindFirst((ClaimTypes.NameIdentifier))?.Value);
+            if (!IsUserClaimValid(out var userClaimError)) return userClaimError!;
 
-            var result = await _writeService.CreateAsync(request, userId);
+            var result = await _writeService.CreateAsync(request, UserId);
 
             if (!result.IsSuccess)
                 return HandleError(StatusCodes.Status400BadRequest, result.Error);
@@ -80,9 +93,9 @@ namespace KitaTrackDemo.Api.Controllers
         [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]   
         public async Task<IActionResult> Edit([FromBody] EditTransactionRequestDto request)
         {
-            var userId = Guid.Parse(User.FindFirst((ClaimTypes.NameIdentifier))?.Value);
+            if (!IsUserClaimValid(out var userClaimError)) return userClaimError!;
 
-            var result = await _writeService.EditAsync(request, userId);
+            var result = await _writeService.EditAsync(request, UserId);
 
             if (!result.IsSuccess)
                 return HandleError(StatusCodes.Status400BadRequest, result.Error);
@@ -96,14 +109,30 @@ namespace KitaTrackDemo.Api.Controllers
         [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var userId = Guid.Parse(User.FindFirst((ClaimTypes.NameIdentifier))?.Value);
+            if (!IsUserClaimValid(out var userClaimError)) return userClaimError!;
 
-            var result = await _writeService.DeleteAsync(id, userId);
+            var result = await _writeService.DeleteAsync(id, UserId);
 
             if (!result.IsSuccess)
                 return HandleError(StatusCodes.Status400BadRequest, result.Error);
 
             return NoContent();
+        }
+
+
+        #region Helpers
+
+        private bool IsUserClaimValid(out ActionResult? errorResult)
+        {
+            if (UserId == Guid.Empty)
+            {
+                errorResult = HandleError(StatusCodes.Status401Unauthorized, 
+                    "Unauthorized. Required user claims are missing from the token.");
+                return false;
+            }
+
+            errorResult = null;
+            return true;
         }
 
         private ActionResult HandleError(int statusCode, string message)
@@ -114,5 +143,7 @@ namespace KitaTrackDemo.Api.Controllers
                 Message = message
             });
         }
+
+        #endregion
     }    
 }
