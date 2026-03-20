@@ -60,7 +60,7 @@ namespace KitaTrackDemo.Api.Controllers
 
         // POST: api/transactions
         [HttpPost]
-        [ProducesResponseType(typeof(TransactionResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TransactionResponseDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TransactionResponseDto>> Create([FromBody] CreateTransactionRequestDto request)
         {
@@ -71,14 +71,14 @@ namespace KitaTrackDemo.Api.Controllers
             if (!result.IsSuccess)
                 return HandleError(StatusCodes.Status400BadRequest, result.Error);
 
-            return Ok(result.Value);
+            return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value);
         }
 
-        // PUT: api/tranasctions
+        // PUT: api/transactions
         [HttpPut]
-        [ProducesResponseType(typeof(TransactionResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]   
-        public async Task<ActionResult<TransactionResponseDto>> Edit([FromBody] EditTransactionRequestDto request)
+        public async Task<IActionResult> Edit([FromBody] EditTransactionRequestDto request)
         {
             var userId = Guid.Parse(User.FindFirst((ClaimTypes.NameIdentifier))?.Value);
 
@@ -87,14 +87,14 @@ namespace KitaTrackDemo.Api.Controllers
             if (!result.IsSuccess)
                 return HandleError(StatusCodes.Status400BadRequest, result.Error);
             
-            return Ok(result.Value);
+            return NoContent();
         }
 
-        // DELETE: api/tranasctions
+        // DELETE: api/transactions
         [HttpDelete("{id:guid}")]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Guid>> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var userId = Guid.Parse(User.FindFirst((ClaimTypes.NameIdentifier))?.Value);
 
@@ -103,7 +103,7 @@ namespace KitaTrackDemo.Api.Controllers
             if (!result.IsSuccess)
                 return HandleError(StatusCodes.Status400BadRequest, result.Error);
 
-            return Ok(result.Value);
+            return NoContent();
         }
 
         private ActionResult HandleError(int statusCode, string message)
