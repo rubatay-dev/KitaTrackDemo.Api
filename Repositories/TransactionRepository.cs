@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using KitaTrackDemo.Api.Data;
 using KitaTrackDemo.Api.Interfaces;
@@ -7,7 +6,6 @@ using KitaTrackDemo.Api.Models.Entities;
 
 namespace KitaTrackDemo.Api.Repositories;
 
-[Authorize]
 public class TransactionRepository : ITransactionRepository
 {
     private readonly ApplicationDbContext _context;
