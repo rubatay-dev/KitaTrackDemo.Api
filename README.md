@@ -26,6 +26,7 @@ The Transactions table is already pre-populated with historical records for this
 - Database: SQL Server (Hosted on MonsterASP)
 - ORM: Entity Framework Core
 - Data Querying: LINQ
+- CI/CD: GitHub Actions
 
 ### Engineering Patterns
 - **Clean Architecture**: Strict separation between Controllers, Services, and Repositories.
@@ -36,10 +37,20 @@ The Transactions table is already pre-populated with historical records for this
 
 ## Security & Data Isolation
 
+### Identity & Password Security
+- **BCrypt Hashing**: User passwords are never stored in plain text. They are hashed using the BCrypt.Net library.
+- **Secure Validation**: Login validation uses BCrypt.Verify to compare incoming passwords against stored hashes.
+
+### Access Control
 - **JWT Authentication**: Secure endpoints protected via Bearer tokens.
 - **Claims-Based Authorization**: The API extracts the NameIdentifier claim from the JWT.
 - **Strict Data Isolation**: Every database query is scoped to the UserId extracted from the token. This ensures that users can only view, edit, or delete their own data, preventing unauthorized cross-user access.
 - **Validated Controllers**: Uses a centralized validation helper (IsUserClaimValid) to ensure required claims are present before executing any logic.
+
+## CI/CD & Deployment
+- **GitHub Actions**: Controlled via .github/workflows/deploy.yml.
+- **Automated Workflow**: On every push to the main branch, the runner performs a restore, build and publish.
+- **Secure Deployment**: Sensitive environment variables (Server credentials, DB strings, JWT Keys) are managed via GitHub Secrets.
 
 ## API Endpoints
 
