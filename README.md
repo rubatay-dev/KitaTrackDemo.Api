@@ -1,6 +1,6 @@
 # KitaTrackDemo.Api
 
-**KitaTrackDemo.Api** is a backend Web API built with modern .NET 10.0 and Clean Architecture principles. It serves as a professional demo for managing e-wallet transactions (such as GCash or Maya), emphasizing security, data isolation and maintainability. The API is designed for demo and educational purposes.
+**KitaTrackDemo.Api** is a backend Web API built with modern .NET 10.0. It follows a decoupled N-Tier (Layered) Architecture, serving as a professional demo for managing e-wallet transactions (such as GCash or Maya). This project emphasizes security, data isolation, and maintainability through modern design patterns. The API is designed for demo and educational purposes.
 
 ## Live Demo
 
@@ -29,8 +29,8 @@ The Transactions table is already pre-populated with historical records for this
 - CI/CD: GitHub Actions
 
 ### Engineering Patterns
-- **Clean Architecture**: Strict separation between Controllers, Services, and Repositories.
-- **CQRS-lite**: Separate Service layers for Read (ITransactionQueryService) and Write (ITransactionService) operations to optimize scalability and readability.
+- **Layered Separation**: Distinct separation between Controllers (Presentation), Services (Business Logic) and Repositories (Data Access).
+- **Dependency Injection**: Extensively used to decouple components, allowing for easy swapping of database providers (e.g., SQL Server to In-Memory) without changing business logic.
 - **Result Pattern**: Business logic returns a generic Result<T> object instead of throwing exceptions, ensuring clean and predictable flow control.
 - **Repository Pattern**: Decouples data access from business logic, utilizing Dependency Injection to allow for easy swapping of database providers (SQL Server, In-Memory, etc.).
 - **DTO Pattern**: Uses Data Transfer Objects to prevent over-posting and ensure the internal database schema is never exposed directly to the client.
