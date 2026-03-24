@@ -35,6 +35,13 @@ The Transactions table is already pre-populated with historical records for this
 - **Repository Pattern**: Decouples data access from business logic, utilizing Dependency Injection to allow for easy swapping of database providers (SQL Server, In-Memory, etc.).
 - **DTO Pattern**: Uses Data Transfer Objects to prevent over-posting and ensure the internal database schema is never exposed directly to the client.
 
+## Features
+
+- **User Authentication**: Register, login with JWT tokens and BCrypt password hashing
+- **Transaction Management**: Create, read, update, delete e-wallet transactions
+- **Filtering & Pagination**: Filter by date range, type, reference with paginated results
+- **Data Isolation**: Users only access their own transactions via UserId claims
+
 ## Security & Data Isolation
 
 ### Identity & Password Security
