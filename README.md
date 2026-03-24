@@ -35,6 +35,13 @@ The Transactions table is already pre-populated with historical records for this
 - **Repository Pattern**: Decouples data access from business logic, utilizing Dependency Injection to allow for easy swapping of database providers (SQL Server, In-Memory, etc.).
 - **DTO Pattern**: Uses Data Transfer Objects to prevent over-posting and ensure the internal database schema is never exposed directly to the client.
 
+## Features
+
+- **User Authentication**: Register, login with JWT tokens and BCrypt password hashing
+- **Transaction Management**: Create, read, update, delete e-wallet transactions
+- **Filtering & Pagination**: Filter by date range, type, reference with paginated results
+- **Data Isolation**: Users only access their own transactions via UserId claims
+
 ## Security & Data Isolation
 
 ### Identity & Password Security
@@ -64,6 +71,21 @@ The Transactions table is already pre-populated with historical records for this
 | /api/Transaction | PUT | Update an existing transaction | Yes |
 | /api/Transaction/{id} | DELETE | Remove a transaction record | Yes |
 | /api/TransactionType/GetAll | GET | Get all available transaction types | Yes |
+
+## Project Structure
+| Path | Responsibility |
+| :--- | :--- |
+| Controllers/ | Presentation: API endpoints (Auth, Transactions) |
+| Services/ | Application: Business logic |
+| Repositories/ | Infrastructure: Data access & Repository pattern |
+| Models/Entities/ | Core business objects (User, Transaction) |
+| Models/DTOs/ | Request/Response objects for API contracts |
+| Interfaces/ | Abstractions: Dependency Injection contracts |
+| Data/ | Persistence: DbContext & Entity configurations |
+| Extensions/ | Configuration: DI setup (Auth, Database, Swagger) |
+| Common/ | Shared: Result<T>, Middleware and Pagination |
+| Migrations/ | Database: EF Core version history |
+| Program.cs | Entry Point: App startup & middleware pipeline |
 
 ## Installation & Local Setup
 
