@@ -72,6 +72,21 @@ The Transactions table is already pre-populated with historical records for this
 | /api/Transaction/{id} | DELETE | Remove a transaction record | Yes |
 | /api/TransactionType/GetAll | GET | Get all available transaction types | Yes |
 
+## Project Structure
+| Path | Responsibility |
+| :--- | :--- |
+| Controllers/ | Presentation: API endpoints (Auth, Transactions) |
+| Services/ | Application: Business logic |
+| Repositories/ | Infrastructure: Data access & Repository pattern |
+| Models/Entities/ | Core business objects (User, Transaction) |
+| Models/DTOs/ | Request/Response objects for API contracts |
+| Interfaces/ | Abstractions: Dependency Injection contracts |
+| Data/ | Persistence: DbContext & Entity configurations |
+| Extensions/ | Configuration: DI setup (Auth, Database, Swagger) |
+| Common/ | Shared: Result<T>, Middleware and Pagination |
+| Migrations/ | Database: EF Core version history |
+| Program.cs | Entry Point: App startup & middleware pipeline |
+
 ## Installation & Local Setup
 
 ### Prerequisites
